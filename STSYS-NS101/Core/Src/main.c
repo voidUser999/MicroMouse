@@ -143,6 +143,188 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
   * @brief  The application entry point.
   * @retval int
   */
+
+#define  ROWS 10
+#define COLS 10
+/* defining the cells of each point
+ */
+typedef struct {
+	uint8_t visited;
+	uint8_t walls[4];
+}MazeCell;
+#define MAZE_ROWS 5
+#define MAZE_COLS 5
+typedef enum {
+    NORTH = 0,
+    EAST  = 1,
+    SOUTH = 2,
+    WEST  = 3
+} Direction;
+//relative direction to absolute direction
+uint8_t leftOf(uint8_t dir)  { return (dir + 3) % 4; }
+uint8_t rightOf(uint8_t dir) { return (dir + 1) % 4; }
+uint8_t behind(uint8_t dir)  { return (dir + 2) % 4; }
+
+int x =0;//this is only for the simulation purposes
+  int y =0;//this is only for the simulation purposes
+  uint8_t dir = SOUTH;
+  MazeCell maze[MAZE_ROWS][MAZE_COLS] = {
+      // Row 0
+      {
+          {0, {1, 0, 1, 1}}, {0, {1, 1, 0, 0}}, {0, {1, 0, 1, 1}}, {0, {1, 1, 1, 0}}, {0, {1, 1, 0, 1}}
+      },
+      // Row 1
+      {
+          {0, {1, 1, 0, 1}}, {0, {0, 1, 1, 1}}, {0, {1, 0, 0, 1}}, {0, {1, 1, 0, 0}}, {0, {0, 1, 1, 1}}
+      },
+      // Row 2
+      {
+          {0, {0, 0, 1, 1}}, {0, {1, 1, 0, 0}}, {0, {0, 1, 1, 1}}, {0, {0, 0, 1, 1}}, {0, {1, 1, 0, 0}}
+      },
+      // Row 3
+      {
+          {0, {1, 1, 1, 1}}, {0, {0, 0, 0, 1}}, {0, {1, 1, 0, 0}}, {0, {1, 0, 1, 1}}, {0, {0, 1, 0, 0}}
+      },
+      // Row 4
+      {
+          {0, {1, 1, 1, 1}}, {0, {0, 1, 1, 1}}, {0, {0, 0, 1, 1}}, {0, {1, 1, 1, 0}}, {0, {0, 1, 1, 1}}
+      }
+  };
+
+
+int dx[4] = {0, 1, 0, -1};  //movement in x direction
+int dy[4] = {-1, 0, 1, 0};  //movement in y direction
+
+MazeCell discoveredMaze[MAZE_ROWS][MAZE_COLS];
+uint8_t isValid(int x, int y) {
+    return x >= 0 && x < MAZE_COLS && y >= 0 && y < MAZE_ROWS;
+}
+void storeWallData(int x, int y, uint8_t dir, uint8_t frontWall, uint8_t leftWall, uint8_t rightWall){
+	MazeCell* cell = &discoveredMaze[y][x];
+	cell->visited = 1;
+
+	//finding absolute positions
+	uint8_t absFront = dir;
+	uint8_t absLeft = leftOf(dir);
+	uint8_t absRight = rightOf(dir);
+
+	cell->walls[absFront] = frontWall;
+	cell->walls[absLeft]  = leftWall;
+	cell->walls[absRight] = rightWall;
+
+	// Update neighbor cells to be symmetric (opposite side)
+	    if (frontWall == 1 && isValid(x + dx[absFront], y + dy[absFront])) {
+	        discoveredMaze[y + dy[absFront]][x + dx[absFront]].walls[behind(absFront)] = 1;
+	    }
+	    if (leftWall == 1 && isValid(x + dx[absLeft], y + dy[absLeft])) {
+	        discoveredMaze[y + dy[absLeft]][x + dx[absLeft]].walls[behind(absLeft)] = 1;
+	    }
+	    if (rightWall == 1 && isValid(x + dx[absRight], y + dy[absRight])) {
+	        discoveredMaze[y + dy[absRight]][x + dx[absRight]].walls[behind(absRight)] = 1;
+	    }
+
+}
+void getSimulatedSensorData(int x, int y, uint8_t dir) {
+    if (!isValid(x, y)) return;
+
+    // Get reference to simulated cell
+    MazeCell *simCell = &maze[y][x];
+
+    // Convert relative directions to absolute
+    uint8_t absFront = dir;
+    uint8_t absLeft  = leftOf(dir);
+    uint8_t absRight = rightOf(dir);
+
+    // Get wall data from simulated maze
+    uint8_t frontWall = simCell->walls[absFront];
+    uint8_t leftWall  = simCell->walls[absLeft];
+    uint8_t rightWall = simCell->walls[absRight];
+
+    // Store the retrieved wall data into discovered maze
+    storeWallData(x, y, dir, frontWall, leftWall, rightWall);
+}
+
+
+
+
+typedef struct {
+    int x, y;
+} Point;
+
+typedef struct {
+    Point point;
+    Direction fromDir;
+} QueueNode;
+
+Direction bfs_find_next_move(int startX, int startY) {
+    uint8_t visited[MAZE_ROWS][MAZE_COLS] = {0};
+    QueueNode queue[MAZE_ROWS * MAZE_COLS];
+    int front = 0, rear = 0;
+
+    Point parent[MAZE_ROWS][MAZE_COLS];
+    for (int y = 0; y < MAZE_ROWS; y++)
+        for (int x = 0; x < MAZE_COLS; x++)
+            parent[y][x] = (Point){-1, -1};
+
+    queue[rear++] = (QueueNode){.point = {startX, startY}};
+    visited[startY][startX] = 1;
+
+    Point goal = {-1, -1};
+
+    // Direction priority: South, East, North, West (Priority order)
+    int bfsPriority[4] = {SOUTH, EAST, NORTH, WEST};
+
+    while (front < rear) {
+        QueueNode node = queue[front++];
+        int cx = node.point.x;
+        int cy = node.point.y;
+
+        // If the goal is reached (last cell in maze)
+        if (cx == MAZE_COLS - 1 && cy == MAZE_ROWS - 1) {
+            goal = (Point){cx, cy};
+            break;
+        }
+
+        // Check directions based on BFS priority order: South -> East -> North -> West
+        for (int i = 0; i < 4; i++) {
+            int d = bfsPriority[i];
+            int nx = cx + dx[d];
+            int ny = cy + dy[d];
+
+            // Only move if the cell is valid and not visited, and there is no wall in the direction
+            if (isValid(nx, ny) && !visited[ny][nx] &&
+                discoveredMaze[cy][cx].walls[d] == 0) {
+                visited[ny][nx] = 1;
+                parent[ny][nx] = (Point){cx, cy};
+                queue[rear++] = (QueueNode){.point = {nx, ny}};
+            }
+        }
+    }
+
+    // Trace back from goal to start to get the first move
+    if (goal.x == -1) return SOUTH; // No path found, default to SOUTH
+
+    int tx = goal.x;
+    int ty = goal.y;
+
+    while (!(parent[ty][tx].x == startX && parent[ty][tx].y == startY)) {
+        Point p = parent[ty][tx];
+        tx = p.x;
+        ty = p.y;
+    }
+
+    int dxMove = tx - startX;
+    int dyMove = ty - startY;
+
+    // Find the direction to move based on dxMove and dyMove
+    for (int d = 0; d < 4; d++) {
+        if (dx[d] == dxMove && dy[d] == dyMove) {
+            return (Direction)d;
+        }
+    }
+
+    return SOUTH; // Default direction if no valid movement found
+}
 int main(void)
 {
   /* USER CODE BEGIN 1 */
@@ -188,22 +370,59 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-//	  battery_indicator();
-    /* USER CODE END WHILE */
+  while (x != MAZE_COLS - 1 || y != MAZE_ROWS - 1) {
+        getSimulatedSensorData(x, y, dir); // updates discovered maze
 
-  MX_BlueNRG_2_Process();
-    /* USER CODE BEGIN 3 */
-//  if (state == 0)
-// 	 	   {
-// 	 	  	 MX_BlueNRG_2_Process();
-// 	 	  	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, GPIO_PIN_SET);
-// 	 	   }
-// 	 	   else
-//
-// 	 	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, GPIO_PIN_RESET);
-  }
+        Direction nextDir = bfs_find_next_move(x, y);
+
+        uint8_t moveCmd = 'S';
+        if (nextDir == dir) {
+            moveCmd = 'F';
+            motordata(&moveCmd);
+        } else if (nextDir == leftOf(dir)) {
+            moveCmd = 'L';
+            motordata(&moveCmd);
+            HAL_Delay(430);
+            moveCmd = 'F';
+            motordata(&moveCmd);
+        } else if (nextDir == rightOf(dir)) {
+        	moveCmd = 'R';
+        	motordata(&moveCmd);
+        	HAL_Delay(430);
+        	moveCmd = 'F';
+        	motordata(&moveCmd);
+        } else if (nextDir == behind(dir)) {
+        	moveCmd = 'L';
+        	motordata(&moveCmd);
+            HAL_Delay(430);
+            motordata(&moveCmd);  // another 'L'
+            moveCmd = 'S';
+            motordata(&moveCmd);
+            HAL_Delay(430);
+            moveCmd = 'L';
+            motordata(&moveCmd);
+            HAL_Delay(430);
+            moveCmd = 'F';
+            motordata(&moveCmd);
+            HAL_Delay(430);  // or handle as two turns
+            moveCmd = 'S';
+            motordata(&moveCmd);
+        }
+
+        // Move
+
+        HAL_Delay(430);
+        moveCmd = 'S';
+        motordata(&moveCmd);
+
+
+        // Update position **based on nextDir**
+        x = x + dx[nextDir];
+        y = y + dy[nextDir];
+        dir = nextDir;
+        HAL_Delay(1000);
+
+    }
   /* USER CODE END 3 */
 }
 
