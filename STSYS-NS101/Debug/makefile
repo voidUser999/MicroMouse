@@ -1,6 +1,6 @@
 ################################################################################
 # Automatically-generated file. Do not edit!
-# Toolchain: GNU Tools for STM32 (11.3.rel1)
+# Toolchain: GNU Tools for STM32 (13.3.rel1)
 ################################################################################
 
 -include ../makefile.init
@@ -67,8 +67,8 @@ all: main-build
 main-build: STSYS-NS101\ Jan2024.elf secondary-outputs
 
 # Tool invocations
-STSYS-NS101\ Jan2024.elf STSYS-NS101\ Jan2024.map: $(OBJS) $(USER_OBJS) C:\Users\mohsinad\STM32CubeIDE\Repository\jan2024\STSYS-NS101\ Jan2024\STM32G070RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "STSYS-NS101 Jan2024.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"C:\Users\mohsinad\STM32CubeIDE\Repository\jan2024\STSYS-NS101 Jan2024\STM32G070RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STSYS-NS101 Jan2024.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+STSYS-NS101\ Jan2024.elf STSYS-NS101\ Jan2024.map: $(OBJS) $(USER_OBJS) /home/anirudh-bharatiya/Desktop/Semester\ 4/ESD/Project/MicroMouse/STSYS-NS101/STM32G070RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "STSYS-NS101 Jan2024.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"/home/anirudh-bharatiya/Desktop/Semester 4/ESD/Project/MicroMouse/STSYS-NS101/STM32G070RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STSYS-NS101 Jan2024.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

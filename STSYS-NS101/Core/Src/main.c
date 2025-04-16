@@ -88,31 +88,31 @@ volatile int count=0;
 int flag = 0;
 uint32_t buffer;
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
-	raw=buffer;
-//	adc_val=HAL_ADC_GetValue(&hadc1);
+    raw=buffer;
+//  adc_val=HAL_ADC_GetValue(&hadc1);
 }
 
 //void HAL_GPIO_EXTI_Rising_Callback(uint16_t GPIO_Pin)
 //{
 //  /* Prevent unused argument(s) compilation warning */
-//	UNUSED(GPIO_Pin);
+//  UNUSED(GPIO_Pin);
 //if(GPIO_Pin == GPIO_PIN_1)
 //{
-//	if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_1) != 0x00u)
-//	   {
-//	     __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_1); // Clears The Interrupt Flag
-//	     HAL_GPIO_EXTI_Rising_Callback(GPIO_PIN_1);   // Calls The ISR Handler CallBack Function
-//	   }
-//	if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_3)==GPIO_PIN_SET)
-//	{
-//	count++;
-//	}
-//	else if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_3)==GPIO_PIN_RESET)
-//	{
-//		count--;
-//		}
+//  if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_1) != 0x00u)
+//     {
+//       __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_1); // Clears The Interrupt Flag
+//       HAL_GPIO_EXTI_Rising_Callback(GPIO_PIN_1);   // Calls The ISR Handler CallBack Function
+//     }
+//  if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_3)==GPIO_PIN_SET)
+//  {
+//  count++;
+//  }
+//  else if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_3)==GPIO_PIN_RESET)
+//  {
+//      count--;
+//      }
 //
-//	printf("count = %d\r\n", count);
+//  printf("count = %d\r\n", count);
 //}
 //}
 //void EXTI1_IRQHandler(void) {
@@ -120,17 +120,17 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
 //   if (EXTI_GetITStatus(EXTI_LINE_1) != RESET)
 //   {
 //      /* Do your stuff when EXTI0 is changed */
-//	   if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_3)==GPIO_PIN_SET)
-//	   	{
-//	   		flag = 1;
-//	   	count++;
-//	   	}
-//	   	else if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_3)==GPIO_PIN_RESET)
-//	   	{
-//	   		flag = 2;
-//	   		count--;
-//	   		}
-//	   printf("count = %d\r\n", count);
+//     if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_3)==GPIO_PIN_SET)
+//      {
+//          flag = 1;
+//      count++;
+//      }
+//      else if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_3)==GPIO_PIN_RESET)
+//      {
+//          flag = 2;
+//          count--;
+//          }
+//     printf("count = %d\r\n", count);
 //      /* Clear interrupt flag */
 //      EXTI_ClearITPendingBit(EXTI_LINE_1);
 //   }
@@ -144,187 +144,126 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc){
   * @retval int
   */
 
-#define  ROWS 10
-#define COLS 10
-/* defining the cells of each point
- */
-typedef struct {
-	uint8_t visited;
-	uint8_t walls[4];
-}MazeCell;
-#define MAZE_ROWS 5
-#define MAZE_COLS 5
 typedef enum {
-    NORTH = 0,
-    EAST  = 1,
-    SOUTH = 2,
-    WEST  = 3
+  NORTH = 0u,
+  EAST  = 1u,
+  SOUTH = 2u,
+  WEST  = 3u
 } Direction;
-//relative direction to absolute direction
-uint8_t leftOf(uint8_t dir)  { return (dir + 3) % 4; }
-uint8_t rightOf(uint8_t dir) { return (dir + 1) % 4; }
-uint8_t behind(uint8_t dir)  { return (dir + 2) % 4; }
 
-int x =0;//this is only for the simulation purposes
-  int y =0;//this is only for the simulation purposes
-  uint8_t dir = SOUTH;
-  MazeCell maze[MAZE_ROWS][MAZE_COLS] = {
-      // Row 0
-      {
-          {0, {1, 0, 1, 1}}, {0, {1, 1, 0, 0}}, {0, {1, 0, 1, 1}}, {0, {1, 1, 1, 0}}, {0, {1, 1, 0, 1}}
-      },
-      // Row 1
-      {
-          {0, {1, 1, 0, 1}}, {0, {0, 1, 1, 1}}, {0, {1, 0, 0, 1}}, {0, {1, 1, 0, 0}}, {0, {0, 1, 1, 1}}
-      },
-      // Row 2
-      {
-          {0, {0, 0, 1, 1}}, {0, {1, 1, 0, 0}}, {0, {0, 1, 1, 1}}, {0, {0, 0, 1, 1}}, {0, {1, 1, 0, 0}}
-      },
-      // Row 3
-      {
-          {0, {1, 1, 1, 1}}, {0, {0, 0, 0, 1}}, {0, {1, 1, 0, 0}}, {0, {1, 0, 1, 1}}, {0, {0, 1, 0, 0}}
-      },
-      // Row 4
-      {
-          {0, {1, 1, 1, 1}}, {0, {0, 1, 1, 1}}, {0, {0, 0, 1, 1}}, {0, {1, 1, 1, 0}}, {0, {0, 1, 1, 1}}
+#define ROWS 5
+#define COLS 5
+
+static const int8_t dx[4] = {0, 1, 0, -1};
+static const int8_t dy[4] = {-1, 0, 1, 0};
+
+typedef struct {
+  uint8_t visited;
+  uint8_t walls[4];
+} Cell;
+
+static const Cell maze[ROWS][COLS] = {
+  {{0, {0, 0, 0, 0}}, {0, {0, 0, 0, 0}}, {0, {0, 0, 0, 0}}, {0, {0, 0, 0, 0}}, {0, {0, 0, 0, 0}}},
+  {{0, {0, 0, 0, 0}}, {0, {0, 0, 0, 0}}, {0, {0, 0, 0, 0}}, {0, {0, 0, 0, 0}}, {0, {0, 0, 0, 0}}},
+  {{0, {0, 0, 0, 0}}, {0, {0, 0, 0, 0}}, {0, {0, 0, 0, 0}}, {0, {0, 0, 0, 0}}, {0, {0, 0, 0, 0}}},
+  {{0, {0, 0, 0, 0}}, {0, {0, 0, 0, 0}}, {0, {0, 0, 0, 0}}, {0, {0, 0, 0, 0}}, {0, {0, 0, 0, 0}}},
+  {{0, {0, 0, 0, 0}}, {0, {0, 0, 0, 0}}, {0, {0, 0, 0, 0}}, {0, {0, 0, 0, 0}}, {0, {0, 0, 0, 0}}}
+};
+
+static Cell discoveredMaze[ROWS][COLS];
+
+static uint8_t leftOf(uint8_t dir)  {
+    return (dir + 3u) & 3u;
+}
+static uint8_t rightOf(uint8_t dir) {
+    return (dir + 1u) & 3u;
+}
+static uint8_t behind(uint8_t dir)  {
+    return (dir + 2u) & 3u;
+}
+static uint8_t isValid(uint8_t x, uint8_t y) {
+  return (x >= 0 && y >= 0 && x < COLS && y < ROWS);
+}
+
+static void updateData(uint8_t x, uint8_t y, uint8_t dir, uint8_t f, uint8_t l, uint8_t r) {
+  Cell *c = &discoveredMaze[y][x];
+  c->visited = 1;
+  uint8_t absF = dir, absL = leftOf(dir), absR = rightOf(dir);
+  c->walls[absF] = f;
+  c->walls[absL] = l;
+  c->walls[absR] = r;
+  if (f && isValid(x + dx[absF], y + dy[absF]))
+    discoveredMaze[y + dy[absF]][x + dx[absF]].walls[behind(absF)] = 1;
+  if (l && isValid(x + dx[absL], y + dy[absL]))
+    discoveredMaze[y + dy[absL]][x + dx[absL]].walls[behind(absL)] = 1;
+  if (r && isValid(x + dx[absR], y + dy[absR]))
+    discoveredMaze[y + dy[absR]][x + dx[absR]].walls[behind(absR)] = 1;
+}
+
+static void getData(uint8_t x, uint8_t y, uint8_t dir) {
+  const Cell *sim = &maze[y][x];
+  uint8_t f = sim->walls[dir];
+  uint8_t l = sim->walls[leftOf(dir)];
+  uint8_t r = sim->walls[rightOf(dir)];
+  updateData(x, y, dir, f, l, r);
+}
+
+static void rotate(uint8_t cmd) {
+  motordata(&cmd);
+  HAL_Delay(430);
+}
+
+static void moveForward(void) {
+  uint8_t cmd = 'F';
+  motordata(&cmd);
+  HAL_Delay(430);
+}
+
+static Direction getNextMove(uint8_t sx, uint8_t sy) {
+  uint8_t vis[ROWS][COLS] = {{0}};
+  typedef struct {
+    uint8_t x, y;
+  } Point;
+  typedef struct {
+    Point p;
+  } QN;
+  QN queue[ROWS * COLS];
+  Point parent[ROWS][COLS];
+  uint16_t front = 0, rear = 0;
+  for (uint8_t i = 0; i < ROWS; i++)
+    for (uint8_t j = 0; j < COLS; j++)
+      parent[i][j] = (Point){0xFF, 0xFF};
+  queue[rear++].p = (Point){sx, sy};
+  vis[sy][sx] = 1;
+  Point goal = {0xFF, 0xFF};
+  const uint8_t ord[4] = {SOUTH, EAST, NORTH, WEST};
+  while (front < rear) {
+    Point c = queue[front++].p;
+    if (c.x == COLS - 1 && c.y == ROWS - 1) { goal = c; break; }
+    for (uint8_t i = 0; i < 4; i++) {
+      uint8_t d = ord[i];
+      int8_t nx = c.x + dx[d];
+      int8_t ny = c.y + dy[d];
+      if (isValid(nx, ny) && !vis[ny][nx] && !discoveredMaze[c.y][c.x].walls[d]) {
+        vis[ny][nx] = 1;
+        parent[ny][nx] = c;
+        queue[rear++].p = (Point){(uint8_t)nx, (uint8_t)ny};
       }
-  };
-
-
-int dx[4] = {0, 1, 0, -1};  //movement in x direction
-int dy[4] = {-1, 0, 1, 0};  //movement in y direction
-
-MazeCell discoveredMaze[MAZE_ROWS][MAZE_COLS];
-uint8_t isValid(int x, int y) {
-    return x >= 0 && x < MAZE_COLS && y >= 0 && y < MAZE_ROWS;
-}
-void storeWallData(int x, int y, uint8_t dir, uint8_t frontWall, uint8_t leftWall, uint8_t rightWall){
-	MazeCell* cell = &discoveredMaze[y][x];
-	cell->visited = 1;
-
-	//finding absolute positions
-	uint8_t absFront = dir;
-	uint8_t absLeft = leftOf(dir);
-	uint8_t absRight = rightOf(dir);
-
-	cell->walls[absFront] = frontWall;
-	cell->walls[absLeft]  = leftWall;
-	cell->walls[absRight] = rightWall;
-
-	// Update neighbor cells to be symmetric (opposite side)
-	    if (frontWall == 1 && isValid(x + dx[absFront], y + dy[absFront])) {
-	        discoveredMaze[y + dy[absFront]][x + dx[absFront]].walls[behind(absFront)] = 1;
-	    }
-	    if (leftWall == 1 && isValid(x + dx[absLeft], y + dy[absLeft])) {
-	        discoveredMaze[y + dy[absLeft]][x + dx[absLeft]].walls[behind(absLeft)] = 1;
-	    }
-	    if (rightWall == 1 && isValid(x + dx[absRight], y + dy[absRight])) {
-	        discoveredMaze[y + dy[absRight]][x + dx[absRight]].walls[behind(absRight)] = 1;
-	    }
-
-}
-void getSimulatedSensorData(int x, int y, uint8_t dir) {
-    if (!isValid(x, y)) return;
-
-    // Get reference to simulated cell
-    MazeCell *simCell = &maze[y][x];
-
-    // Convert relative directions to absolute
-    uint8_t absFront = dir;
-    uint8_t absLeft  = leftOf(dir);
-    uint8_t absRight = rightOf(dir);
-
-    // Get wall data from simulated maze
-    uint8_t frontWall = simCell->walls[absFront];
-    uint8_t leftWall  = simCell->walls[absLeft];
-    uint8_t rightWall = simCell->walls[absRight];
-
-    // Store the retrieved wall data into discovered maze
-    storeWallData(x, y, dir, frontWall, leftWall, rightWall);
-}
-
-
-
-
-typedef struct {
-    int x, y;
-} Point;
-
-typedef struct {
-    Point point;
-    Direction fromDir;
-} QueueNode;
-
-Direction bfs_find_next_move(int startX, int startY) {
-    uint8_t visited[MAZE_ROWS][MAZE_COLS] = {0};
-    QueueNode queue[MAZE_ROWS * MAZE_COLS];
-    int front = 0, rear = 0;
-
-    Point parent[MAZE_ROWS][MAZE_COLS];
-    for (int y = 0; y < MAZE_ROWS; y++)
-        for (int x = 0; x < MAZE_COLS; x++)
-            parent[y][x] = (Point){-1, -1};
-
-    queue[rear++] = (QueueNode){.point = {startX, startY}};
-    visited[startY][startX] = 1;
-
-    Point goal = {-1, -1};
-
-    // Direction priority: South, East, North, West (Priority order)
-    int bfsPriority[4] = {SOUTH, EAST, NORTH, WEST};
-
-    while (front < rear) {
-        QueueNode node = queue[front++];
-        int cx = node.point.x;
-        int cy = node.point.y;
-
-        // If the goal is reached (last cell in maze)
-        if (cx == MAZE_COLS - 1 && cy == MAZE_ROWS - 1) {
-            goal = (Point){cx, cy};
-            break;
-        }
-
-        // Check directions based on BFS priority order: South -> East -> North -> West
-        for (int i = 0; i < 4; i++) {
-            int d = bfsPriority[i];
-            int nx = cx + dx[d];
-            int ny = cy + dy[d];
-
-            // Only move if the cell is valid and not visited, and there is no wall in the direction
-            if (isValid(nx, ny) && !visited[ny][nx] &&
-                discoveredMaze[cy][cx].walls[d] == 0) {
-                visited[ny][nx] = 1;
-                parent[ny][nx] = (Point){cx, cy};
-                queue[rear++] = (QueueNode){.point = {nx, ny}};
-            }
-        }
     }
+  }
+  Point cur = goal;
+  while (!(parent[cur.y][cur.x].x == sx && parent[cur.y][cur.x].y == sy)) {
+    cur = parent[cur.y][cur.x];
+  }
+  int8_t dxm = cur.x - sx;
+  int8_t dym = cur.y - sy;
+  for (uint8_t d = 0; d < 4; d++) {
+    if (dx[d] == dxm && dy[d] == dym) return (Direction)d;
+  }
 
-    // Trace back from goal to start to get the first move
-    if (goal.x == -1) return SOUTH; // No path found, default to SOUTH
-
-    int tx = goal.x;
-    int ty = goal.y;
-
-    while (!(parent[ty][tx].x == startX && parent[ty][tx].y == startY)) {
-        Point p = parent[ty][tx];
-        tx = p.x;
-        ty = p.y;
-    }
-
-    int dxMove = tx - startX;
-    int dyMove = ty - startY;
-
-    // Find the direction to move based on dxMove and dyMove
-    for (int d = 0; d < 4; d++) {
-        if (dx[d] == dxMove && dy[d] == dyMove) {
-            return (Direction)d;
-        }
-    }
-
-    return SOUTH; // Default direction if no valid movement found
+  return SOUTH;
 }
+
 int main(void)
 {
   /* USER CODE BEGIN 1 */
@@ -370,59 +309,27 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (x != MAZE_COLS - 1 || y != MAZE_ROWS - 1) {
-        getSimulatedSensorData(x, y, dir); // updates discovered maze
+  int x = 0, y = 0;
+  Direction dir = SOUTH;
+  while (!(x == COLS - 1 && y == ROWS - 1)) {
+    getData(x, y, dir);
 
-        Direction nextDir = bfs_find_next_move(x, y);
+    Direction nd = getNextMove(x, y);
+    if (nd == leftOf(dir))
+      rotate('L');
+    else if (nd == rightOf(dir))
+      rotate('R');
+    else if (nd == behind(dir))
+      rotate('B');
+    moveForward();
+    uint8_t stop = 'S';
+    motordata(&stop);
 
-        uint8_t moveCmd = 'S';
-        if (nextDir == dir) {
-            moveCmd = 'F';
-            motordata(&moveCmd);
-        } else if (nextDir == leftOf(dir)) {
-            moveCmd = 'L';
-            motordata(&moveCmd);
-            HAL_Delay(430);
-            moveCmd = 'F';
-            motordata(&moveCmd);
-        } else if (nextDir == rightOf(dir)) {
-        	moveCmd = 'R';
-        	motordata(&moveCmd);
-        	HAL_Delay(430);
-        	moveCmd = 'F';
-        	motordata(&moveCmd);
-        } else if (nextDir == behind(dir)) {
-        	moveCmd = 'L';
-        	motordata(&moveCmd);
-            HAL_Delay(430);
-            motordata(&moveCmd);  // another 'L'
-            moveCmd = 'S';
-            motordata(&moveCmd);
-            HAL_Delay(430);
-            moveCmd = 'L';
-            motordata(&moveCmd);
-            HAL_Delay(430);
-            moveCmd = 'F';
-            motordata(&moveCmd);
-            HAL_Delay(430);  // or handle as two turns
-            moveCmd = 'S';
-            motordata(&moveCmd);
-        }
-
-        // Move
-
-        HAL_Delay(430);
-        moveCmd = 'S';
-        motordata(&moveCmd);
-
-
-        // Update position **based on nextDir**
-        x = x + dx[nextDir];
-        y = y + dy[nextDir];
-        dir = nextDir;
-        HAL_Delay(1000);
-
-    }
+    x += dx[nd];
+    y += dy[nd];
+    dir = nd;
+    HAL_Delay(1000);
+  }
   /* USER CODE END 3 */
 }
 
@@ -705,14 +612,14 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	counterOutside++;
-	  currentMillis = HAL_GetTick();
-	  if (GPIO_Pin == GPIO_PIN_13 && (currentMillis - previousMillis > 20))
-	  {
-	    counterInside++;
-	   state=!state;
-	    previousMillis = currentMillis;
-	  }
+    counterOutside++;
+      currentMillis = HAL_GetTick();
+      if (GPIO_Pin == GPIO_PIN_13 && (currentMillis - previousMillis > 20))
+      {
+        counterInside++;
+       state=!state;
+        previousMillis = currentMillis;
+      }
 }
 void enable_dualbridge(void)
 {
@@ -733,108 +640,108 @@ void ihm12a1_stspin240_init(void)
 }
 void motordata(uint8_t *data)
 {
-	 switch(data[0])
-	 {
-	            /*F: to move forward*/
-	 case 'F':
-		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);//DIR_1
-		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);//DIR_2
-		TIM3->CCR2 = 100;
-		TIM3->CCR1 = 100;
-		HAL_Delay(25);
-		TIM3->CCR2 = 90;
-		TIM3->CCR1 = 90;
-		HAL_Delay(15);
-		TIM3->CCR2 = 100;
-		TIM3->CCR1 = 100;
-		break;
-	/*L: to turn left*/
-	case 'L':
-		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);//DIR_2
-		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);//DIR_1
-		TIM3->CCR2 = 100;
-		TIM3->CCR1 = 100;
-		break;
-	/*R: to turn right*/
-	case 'R':
-		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);//DIR_1
-		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);//DIR_2
-		TIM3->CCR2 = 100;
-		TIM3->CCR1 = 100;
-		break;
-	/*B: to move backward*/
-	case 'B':
-		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);//DIR_2
-		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);//DIR_1
-		TIM3->CCR2 = 100;
-		TIM3->CCR1 = 100;
-		HAL_Delay(25);
-		TIM3->CCR2 = 90;
-		TIM3->CCR1 = 90;
-		HAL_Delay(15);
-		TIM3->CCR2 = 100;
-		TIM3->CCR1 = 100;
-		break;
-	/*Q: to move anti-clockwise until another button pressed*/
-	case 'Q':
-		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);//DIR_1
-		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);//DIR_2
-		TIM3->CCR2 = 60;
-		TIM3->CCR1 = 25;
-		break;
-	/*C: to move clockwise until another button pressed*/
-	case 'C':
-		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);//DIR_1
-		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);//DIR_2
-		TIM3->CCR2 = 60;
-		TIM3->CCR1 = 25;
-		break;
-	case 'S':
-		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);//DIR_1
-		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);//DIR_2
-		TIM3->CCR2 = 0;
-		TIM3->CCR1 = 0;
-		break;
-	default:
-		TIM3->CCR2 = 0;
-		TIM3->CCR1 = 0;
-		break;
-	}
+     switch(data[0])
+     {
+                /*F: to move forward*/
+     case 'F':
+        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);//DIR_1
+        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);//DIR_2
+        TIM3->CCR2 = 100;
+        TIM3->CCR1 = 100;
+        HAL_Delay(25);
+        TIM3->CCR2 = 90;
+        TIM3->CCR1 = 90;
+        HAL_Delay(15);
+        TIM3->CCR2 = 100;
+        TIM3->CCR1 = 100;
+        break;
+    /*L: to turn left*/
+    case 'L':
+        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);//DIR_2
+        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);//DIR_1
+        TIM3->CCR2 = 100;
+        TIM3->CCR1 = 100;
+        break;
+    /*R: to turn right*/
+    case 'R':
+        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);//DIR_1
+        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);//DIR_2
+        TIM3->CCR2 = 100;
+        TIM3->CCR1 = 100;
+        break;
+    /*B: to move backward*/
+    case 'B':
+        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);//DIR_2
+        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);//DIR_1
+        TIM3->CCR2 = 100;
+        TIM3->CCR1 = 100;
+        HAL_Delay(25);
+        TIM3->CCR2 = 90;
+        TIM3->CCR1 = 90;
+        HAL_Delay(15);
+        TIM3->CCR2 = 100;
+        TIM3->CCR1 = 100;
+        break;
+    /*Q: to move anti-clockwise until another button pressed*/
+    case 'Q':
+        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);//DIR_1
+        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);//DIR_2
+        TIM3->CCR2 = 60;
+        TIM3->CCR1 = 25;
+        break;
+    /*C: to move clockwise until another button pressed*/
+    case 'C':
+        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);//DIR_1
+        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);//DIR_2
+        TIM3->CCR2 = 60;
+        TIM3->CCR1 = 25;
+        break;
+    case 'S':
+        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);//DIR_1
+        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);//DIR_2
+        TIM3->CCR2 = 0;
+        TIM3->CCR1 = 0;
+        break;
+    default:
+        TIM3->CCR2 = 0;
+        TIM3->CCR1 = 0;
+        break;
+    }
 }
 
 //void battery_indicator(void){
-////	 HAL_ADC_Start(&hadc1);
-////		  HAL_ADC_PollForConversion(&hadc1, 300);
-////		  raw=HAL_ADC_GetValue(&hadc1);
-//	 float vin=raw*(3.3/4096);
-//		  sprintf(msg2,"vol=%.2f\r\n",vin);
-//		  HAL_UART_Transmit(&huart2,(uint8_t*)msg2, strlen(msg2),300);
-////		  HAL_Delay(2000);
-//		  if(vin<threshold){
-//			  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_SET );
-//			  HAL_Delay(1000);
-//			  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_RESET );
-//			  HAL_Delay(500);
-//		  }
-//		  if(vin>threshold && vin<warn){
-//			  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_SET );
-//		  	  }
+////     HAL_ADC_Start(&hadc1);
+////          HAL_ADC_PollForConversion(&hadc1, 300);
+////          raw=HAL_ADC_GetValue(&hadc1);
+//   float vin=raw*(3.3/4096);
+//        sprintf(msg2,"vol=%.2f\r\n",vin);
+//        HAL_UART_Transmit(&huart2,(uint8_t*)msg2, strlen(msg2),300);
+////          HAL_Delay(2000);
+//        if(vin<threshold){
+//            HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_SET );
+//            HAL_Delay(1000);
+//            HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_RESET );
+//            HAL_Delay(500);
+//        }
+//        if(vin>threshold && vin<warn){
+//            HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_SET );
+//            }
 //
 //}
 //void battery_led_blink(void){
-//	float vin=raw*(3.3/4096);
-//	 if(vin<threshold){
-//				  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_SET );
-//	//			  HAL_Delay(100);
-//	//			  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_RESET );
-//	//			 		  HAL_Delay(100);
-//			  }
-//			  if(vin>threshold && vin<warn){
-//			  		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_SET );
-//			  		  HAL_Delay(2000);
-//			  		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_RESET );
-//			  		  		  HAL_Delay(2000);
-//			  	  }
+//  float vin=raw*(3.3/4096);
+//   if(vin<threshold){
+//                HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_SET );
+//  //            HAL_Delay(100);
+//  //            HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_RESET );
+//  //                    HAL_Delay(100);
+//            }
+//            if(vin>threshold && vin<warn){
+//                    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_SET );
+//                    HAL_Delay(2000);
+//                    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, GPIO_PIN_RESET );
+//                            HAL_Delay(2000);
+//                }
 //}
 
 //PUTCHAR_PROTOTYPE
