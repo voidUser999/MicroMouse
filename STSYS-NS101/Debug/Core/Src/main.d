@@ -28,6 +28,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_exti.h \
  ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_flash.h \
  ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_flash_ex.h \
+ ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_i2c.h \
+ ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_i2c_ex.h \
  ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_pwr.h \
  ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_pwr_ex.h \
  ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_spi.h \
@@ -36,13 +38,10 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_tim_ex.h \
  ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_uart.h \
  ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_uart_ex.h \
- ../BlueNRG_2/Target/hci_tl_interface.h \
- ../Core/Inc/stm32g0xx_nucleo_bus.h ../Core/Inc/stm32g0xx_nucleo_conf.h \
- ../Drivers/BSP/STM32G0xx_Nucleo/stm32g0xx_nucleo_errno.h \
  ../Drivers/BSP/STM32G0xx_Nucleo/stm32g0xx_nucleo.h \
  ../Core/Inc/stm32g0xx_nucleo_conf.h \
  ../Drivers/BSP/STM32G0xx_Nucleo/stm32g0xx_nucleo_errno.h \
- ../BlueNRG_2/App/app_bluenrg_2.h
+ ../TOF/App/app_tof.h ../Core/Inc/vl53l5cx_api.h ../Core/Inc/platform.h
 ../Core/Inc/main.h:
 ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal.h:
 ../Core/Inc/stm32g0xx_hal_conf.h:
@@ -73,6 +72,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_exti.h:
 ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_flash.h:
 ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_flash_ex.h:
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_i2c.h:
+../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_i2c_ex.h:
 ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_pwr.h:
 ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_pwr_ex.h:
 ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_spi.h:
@@ -81,11 +82,9 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_tim_ex.h:
 ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_uart.h:
 ../Drivers/STM32G0xx_HAL_Driver/Inc/stm32g0xx_hal_uart_ex.h:
-../BlueNRG_2/Target/hci_tl_interface.h:
-../Core/Inc/stm32g0xx_nucleo_bus.h:
-../Core/Inc/stm32g0xx_nucleo_conf.h:
-../Drivers/BSP/STM32G0xx_Nucleo/stm32g0xx_nucleo_errno.h:
 ../Drivers/BSP/STM32G0xx_Nucleo/stm32g0xx_nucleo.h:
 ../Core/Inc/stm32g0xx_nucleo_conf.h:
 ../Drivers/BSP/STM32G0xx_Nucleo/stm32g0xx_nucleo_errno.h:
-../BlueNRG_2/App/app_bluenrg_2.h:
+../TOF/App/app_tof.h:
+../Core/Inc/vl53l5cx_api.h:
+../Core/Inc/platform.h:

@@ -9,16 +9,15 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
--include Middlewares/ST/BlueNRG-2/utils/subdir.mk
--include Middlewares/ST/BlueNRG-2/hci/hci_tl_patterns/Basic/subdir.mk
--include Middlewares/ST/BlueNRG-2/hci/controller/subdir.mk
--include Middlewares/ST/BlueNRG-2/hci/subdir.mk
+-include TOF/Target/subdir.mk
+-include TOF/App/subdir.mk
 -include Drivers/STM32G0xx_HAL_Driver/Src/subdir.mk
 -include Drivers/BSP/STM32G0xx_Nucleo/subdir.mk
+-include Drivers/BSP/Components/vl53l5cx/porting/subdir.mk
+-include Drivers/BSP/Components/vl53l5cx/modules/subdir.mk
+-include Drivers/BSP/Components/vl53l5cx/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk
--include BlueNRG_2/Target/subdir.mk
--include BlueNRG_2/App/subdir.mk
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)
@@ -67,8 +66,8 @@ all: main-build
 main-build: STSYS-NS101\ Jan2024.elf secondary-outputs
 
 # Tool invocations
-STSYS-NS101\ Jan2024.elf STSYS-NS101\ Jan2024.map: $(OBJS) $(USER_OBJS) /home/anirudh-bharatiya/Desktop/Semester\ 4/ESD/Project/MicroMouse/STSYS-NS101/STM32G070RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "STSYS-NS101 Jan2024.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"/home/anirudh-bharatiya/Desktop/Semester 4/ESD/Project/MicroMouse/STSYS-NS101/STM32G070RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STSYS-NS101 Jan2024.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+STSYS-NS101\ Jan2024.elf STSYS-NS101\ Jan2024.map: $(OBJS) $(USER_OBJS) C:\Users\jagan\OneDrive\Documents\STSYS-NS101-IR-COMPLETE\STSYS-NS101\STM32G070RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "STSYS-NS101 Jan2024.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"C:\Users\jagan\OneDrive\Documents\STSYS-NS101-IR-COMPLETE\STSYS-NS101\STM32G070RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STSYS-NS101 Jan2024.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

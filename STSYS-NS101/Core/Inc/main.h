@@ -29,7 +29,6 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 #include "stm32g0xx_hal.h"
 
-#include "hci_tl_interface.h"
 #include "stm32g0xx_nucleo.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -65,7 +64,9 @@ void Error_Handler(void);
 #define LED4_GPIO_Port GPIOC
 #define LED3_Pin GPIO_PIN_12
 #define LED3_GPIO_Port GPIOC
-#define BSP_BUTTON_EXTI_IRQn EXTI4_15_IRQn
+#define BSP_button_Pin GPIO_PIN_13
+#define BSP_button_GPIO_Port GPIOC
+#define BSP_button_EXTI_IRQn EXTI4_15_IRQn
 #define MCO_Pin GPIO_PIN_0
 #define MCO_GPIO_Port GPIOF
 #define INT_ENCODER1_Pin GPIO_PIN_1
@@ -81,6 +82,8 @@ void Error_Handler(void);
 #define SPI_CS_GPIO_Port GPIOA
 #define BLNRG_RST_Pin GPIO_PIN_4
 #define BLNRG_RST_GPIO_Port GPIOC
+#define NUCLEO_LED_Pin GPIO_PIN_5
+#define NUCLEO_LED_GPIO_Port GPIOC
 #define ADC_BATTERY_INDICATOR_Pin GPIO_PIN_2
 #define ADC_BATTERY_INDICATOR_GPIO_Port GPIOB
 #define PHA_Pin GPIO_PIN_14

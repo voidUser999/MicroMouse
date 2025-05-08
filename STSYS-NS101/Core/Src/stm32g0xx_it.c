@@ -148,7 +148,7 @@ void EXTI0_1_IRQHandler(void)
   /* USER CODE BEGIN EXTI0_1_IRQn 0 */
 
   /* USER CODE END EXTI0_1_IRQn 0 */
-  HAL_EXTI_IRQHandler(&H_EXTI_0);
+  HAL_GPIO_EXTI_IRQHandler(SPI_BNRG_EXTI_Pin);
   HAL_GPIO_EXTI_IRQHandler(INT_ENCODER1_Pin);
   /* USER CODE BEGIN EXTI0_1_IRQn 1 */
   /* EXTI line interrupt detected */
@@ -182,7 +182,7 @@ void EXTI4_15_IRQHandler(void)
   /* USER CODE BEGIN EXTI4_15_IRQn 0 */
 
   /* USER CODE END EXTI4_15_IRQn 0 */
-  HAL_EXTI_IRQHandler(&H_EXTI_13);
+  HAL_GPIO_EXTI_IRQHandler(BSP_button_Pin);
   /* USER CODE BEGIN EXTI4_15_IRQn 1 */
 
   /* USER CODE END EXTI4_15_IRQn 1 */

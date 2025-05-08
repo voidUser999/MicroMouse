@@ -22,9 +22,9 @@
 #define  __RTE_COMPONENTS_H__
 
 /* Defines ------------------------------------------------------------------*/
-/* STMicroelectronics.X-CUBE-BLE2.3.3.0 */
-#define SAMPLE_APP
-#define HCI_TL
-#define HCI_TL_INTERFACE
+/* STMicroelectronics.X-CUBE-TOF1.3.4.3 */
+#define VL53L5CX_SIMPLE_RANGING
+#define VL53L5CX
+#define BSP_RANGING_SENSOR
 
 #endif /* __RTE_COMPONENTS_H__ */
